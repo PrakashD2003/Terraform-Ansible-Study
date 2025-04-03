@@ -1,0 +1,6 @@
+.terraform/
+*.swp
+*.swo
+*.swn
+*.sw?
+tfplan

@@ -1,0 +1,40 @@
+--- # This playbook automates the installation and configuration of an Nginx web server on remote EC2 instances.
+- name: Setup Nginx Web Server  # Name of the Ansible playbook
+  hosts: webservers  # Specifies that the tasks will run on the group "webservers" (defined in inventory.ini)
+  become: yes  # Grants root (sudo) privileges to execute administrative tasks
+
+  vars:
+    nginx_root: "{{ '/var/www/html' if ansible_os_family == 'Debian' else '/usr/share/nginx/html' }}"
+
+  tasks:  # List of tasks to execute on the remote server
+
+    - name: Install Nginx (Ubuntu) # Task to install the Nginx web server on Ubuntu/Debian
+      apt:  # Uses the "apt" module (for Debian-based OS like Ubuntu)
+        name: nginx  # Specifies that the "nginx" package should be installed
+        update_cache: yes  # Updates package index before installing
+        state: present  # Ensures Nginx is installed (does nothing if already installed)
+      when: ansible_facts['pkg_mgr'] == "apt"  # Ensures it only runs on Ubuntu/Debian
+
+    - name: Install Nginx (Amazon Linux/RHEL) # Task to install the Nginx web server on Amazon Linux or RHEL
+      yum:  # Uses the "yum" module (for RedHat-based OS like Amazon Linux, CentOS)
+        name: nginx
+        state: present
+      when: ansible_facts['pkg_mgr'] == "yum"  # Ensures it only runs on Amazon Linux/RHEL
+
+    - name: Ensure /usr/share/nginx/html exists  # Task to ensure the web root directory exists
+      file:
+        path: "{{ nginx_root }}"  # Path to the web root directory
+        state: directory  # Ensures the directory exists
+        mode: '0755'  # Sets appropriate permissions
+
+    - name: Copy Custom HTML File  # Task to deploy a custom HTML file for the web server
+      copy:  # Uses the "copy" module to transfer files from the local machine to the remote server
+        src: index.html  # Source file (must be in the same directory as the playbook)
+        dest: "{{ nginx_root }}/index.html"  # Destination where the file will be placed in the server
+
+    - name: Start and Enable Nginx  # Task to ensure Nginx is running and enabled on boot
+      service:  # Uses the "service" module to manage system services
+        name: nginx  # Specifies that we are managing the "nginx" service
+        state: started  # Ensures that Nginx is running (starts it if it's not running)
+        enabled: yes  # Ensures Nginx starts automatically on system reboot
+
