@@ -17,7 +17,7 @@ variable "ami_id" {
 # Define AMI ID (Ubuntu)
 variable "ami_id_ubuntu" {
   description = "Ubuntu AMI ID for EC2 Instance"
-  default     = "ami-0f2e255ec956ade7f" # AMI ID
+  default     = "ami-0e35ddab05955cf57" # AMI ID
 }
 
 # 🔹 Define Instance Type
