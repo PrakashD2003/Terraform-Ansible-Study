@@ -23,11 +23,11 @@ provider "aws" {
 # Linking or Storing Terraform State file in Remote Database 
 terraform {
   backend "s3" {
-    bucket         = "s3-for-terraform-state31"     # Name of the S3 bucket where the Terraform state file will be stored (must be lowercase & globally unique)
-    key            = "terraform.tfstate"          # The path and name of the state file inside the S3 bucket.
+    bucket         = "s3-for-terraform-state31" # Name of the S3 bucket where the Terraform state file will be stored (must be lowercase & globally unique)
+    key            = "terraform.tfstate"        # The path and name of the state file inside the S3 bucket.
     region         = "ap-south-1"               # The AWS region where the S3 bucket and DynamoDB table are located.
-    dynamodb_table = "terraform-state-locks"      # Name of the DynamoDB table used for state locking.
-    encrypt        = true                          # Ensures that the state file is encrypted using AES-256 encryption.
+    dynamodb_table = "terraform-state-locks"    # Name of the DynamoDB table used for state locking.
+    encrypt        = true                       # Ensures that the state file is encrypted using AES-256 encryption.
   }
 }
 
@@ -71,9 +71,9 @@ resource "aws_security_group" "web_sg" {
 # ≡ƒö╣ EC2 Instance Definition
 # -----------------------------
 resource "aws_instance" "web_server" {
-  ami           = var.Amazon_Linux_AMI        # AMI ID (Amazon Machine Image) from variables.tf
-  instance_type = var.instance_type # Instance type from variables.tf
-  key_name      = var.key_pair      # SSH Key Pair Name
+  ami           = var.Amazon_Linux_AMI # AMI ID (Amazon Machine Image) from variables.tf
+  instance_type = var.instance_type    # Instance type from variables.tf
+  key_name      = var.key_pair         # SSH Key Pair Name
 
   # Attach Security Group to EC2
   vpc_security_group_ids = [aws_security_group.web_sg.id]
@@ -93,39 +93,39 @@ resource "aws_instance" "web_server" {
   }
 }
 
-resource "aws_instance" "terraform_plus_ansible"{
-  ami = var.Ubuntu_AMI
+resource "aws_instance" "terraform_plus_ansible" {
+  ami           = var.Ubuntu_AMI
   instance_type = var.instance_type
-  key_name = var.key_pair
+  key_name      = var.key_pair
 
   vpc_security_group_ids = [aws_security_group.web_sg.id]
 
   tags = {
     Name = "Terraform-Ansible-EC2"
   }
-  
+
 }
 # Creating Multiple EC2 Instance (Ubuntu Instances)
 resource "aws_instance" "Ubuntu_Instances" {
   count = 2 # Creates 2 Instances
 
-  ami = var.Ubuntu_AMI
-  instance_type =  var.instance_type
-  key_name = var.key_pair
+  ami           = var.Ubuntu_AMI
+  instance_type = var.instance_type
+  key_name      = var.key_pair
 
   vpc_security_group_ids = [aws_security_group.web_sg.id]
-tags = {
-  Name = "Ubuntu_EC2-${count.index}"
-}  
+  tags = {
+    Name = "Ubuntu_EC2-${count.index}"
+  }
 }
 
 # Creating Multiple EC2 Instance (Amazon_Linux Instances)
 resource "aws_instance" "Amazon_Linux_Instances" {
-  count = 2 
+  count = 2
 
-  ami = var.Amazon_Linux_AMI
+  ami           = var.Amazon_Linux_AMI
   instance_type = var.instance_type
-  key_name = var.key_pair
+  key_name      = var.key_pair
 
   vpc_security_group_ids = [aws_security_group.web_sg.id]
   tags = {
@@ -137,9 +137,9 @@ resource "aws_instance" "Amazon_Linux_Instances" {
 resource "aws_instance" "RHEL_Instances" {
   count = 2
 
-  ami = var.Red_Hat_AMI
+  ami           = var.Red_Hat_AMI
   instance_type = var.instance_type
-  key_name = var.key_pair
+  key_name      = var.key_pair
 
   vpc_security_group_ids = [aws_security_group.web_sg.id]
   tags = {
@@ -197,6 +197,9 @@ resource "aws_dynamodb_table" "terraform_locks" {
   # Enable point-in-time recovery for data protection
   point_in_time_recovery {
     enabled = true
+  }
+  lifecycle {
+    prevent_destroy = true # Prevents accidental deletion of the S3 bucket
   }
 }
 

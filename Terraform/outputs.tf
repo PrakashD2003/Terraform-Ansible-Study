@@ -17,17 +17,17 @@ output "Terraform-Ansible-EC2_ip" {
 # Defining an output variable to store the public IP of the Ubuntu Instances EC2 instance                         
 output "ubuntu_instance_ips" {
   description = "Public IPs of All Ubuntu_Intances"
-  value = aws_instance.Ubuntu_Instances[*].public_ip # Stores IPs of all EC2                                                                                 
- } 
+  value       = aws_instance.Ubuntu_Instances[*].public_ip # Stores IPs of all EC2                                                                                 
+}
 
 # Defining an output variable to store the public IP of the Amazon_Linux Instances EC2 instance 
 output "amazon_linux_instance_ips" {
   description = "Public IPs of All Amazon_Linux_Instance"
-  value = aws_instance.Amazon_Linux_Instances[*].public_ip
+  value       = aws_instance.Amazon_Linux_Instances[*].public_ip
 }
 
 # Defining an output variable to store the public IP of the RHEL Instances EC2 instance 
 output "rhel_instance_ips" {
   description = "Public IPs of All RHEL_Instance"
-  value = aws_instance.RHEL_Instances[*].public_ip
+  value       = aws_instance.RHEL_Instances[*].public_ip
 }

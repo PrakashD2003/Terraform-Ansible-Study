@@ -11,13 +11,13 @@ variable "aws_region" {
 # Define AMI ID (Amazon_Linux)
 variable "Amazon_Linux_AMI" {
   description = "Amazon Linux AMI ID for EC2 Instance"
-  default = "ami-002f6e91abff6eb96" # AMI ID 
+  default     = "ami-002f6e91abff6eb96" # AMI ID 
 }
 
 # Define AMI ID (Red_Hat)
 variable "Red_Hat_AMI" {
   description = "Red Hat AMI ID for EC2 Insatance"
-  default = "ami-0402e56c0a7afb78f" # AMI ID
+  default     = "ami-0402e56c0a7afb78f" # AMI ID
 }
 
 # Define AMI ID (Ubuntu)
