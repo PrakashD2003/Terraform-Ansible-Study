@@ -1,6 +1,6 @@
 --- # This playbook automates the installation and configuration of an Nginx web server on remote EC2 instances.
 - name: Setup Nginx Web Server  # Name of the Ansible playbook
-  hosts: nginx_servers  # Specifies that the tasks will run on the group "nginx_servers" (defined in inventory.ini)
+  hosts: ubuntu:amazon_linux:rhel  # Specifies that the tasks will run on the group "nginx_servers" (defined in inventory.ini)
   become: yes  # Grants root (sudo) privileges to execute administrative tasks
 
   vars:
@@ -13,13 +13,13 @@
         name: nginx  # Specifies that the "nginx" package should be installed
         update_cache: yes  # Updates package index before installing
         state: present  # Ensures Nginx is installed (does nothing if already installed)
-      when: ansible_facts['pkg_mgr'] == "apt"  # Ensures it only runs on Ubuntu/Debian
+      when: ansible_os_family == "Debian"  # Ensures it only runs on Ubuntu/Debian
 
     - name: Install Nginx (Amazon Linux/RHEL) # Task to install the Nginx web server on Amazon Linux or RHEL
       yum:  # Uses the "yum" module (for RedHat-based OS like Amazon Linux, CentOS)
         name: nginx
         state: present
-      when: ansible_facts['pkg_mgr'] == "yum"  # Ensures it only runs on Amazon Linux/RHEL
+      when: ansible_os_family == "RedHat"  # Ensures it only runs on Amazon Linux/RHEL
 
     - name: Ensure /usr/share/nginx/html exists  # Task to ensure the web root directory exists
       file:
